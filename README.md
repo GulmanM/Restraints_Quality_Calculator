@@ -15,13 +15,13 @@ It is designed for structure prediction workflows such as HADDOCK and enables ef
 ```
 restraint-score/
 ├── Restraints_quality_calculator.py             # Core calculator script
-├── run_demo.ipynb                               # Script to run both high and low scoring examples
+├── run_demo.py                                  # Script to run both high and low scoring examples
 ├── demo/
 │   ├── 1azg_high_scoring_example.xlsx           # Example input file 1
 │   ├── 1azg_low_scoring_example.xlsx            # Example input file 2
 │   ├── 1azg_high_scoring_example_output.xlsx    # Output 1 (generated)
 │   └── 1azg_low_scoring_example_output.xlsx     # Output 2 (generated)
-├── conservation_weights.xlsx                    # Reference scores from 43 PDB complexes
+├── conservation_weights_SH3_domain.xlsx                    # Reference scores from 43 PDB complexes
 ├── README.md                                    
 ```
 
@@ -35,7 +35,7 @@ This project uses:
 
 - `pandas`
 - `numpy`
-- `openpyxl` (for reading and writing `.xlsx` files)
+- `openpyxl` 
 
 Install them with:
 
@@ -73,41 +73,52 @@ This will:
 
 ---
 
-## Input Format
+## Input Excel format
 
-Each input Excel file should contain:
+Each input `.xlsx` file must contain:
 
-- A constant `Ls` value (number of peptide residues in active site) stored in **row 2, column B**
-- A table starting at **row 3** with the following column headers:
+### 1) Constants block (top of sheet)
+A small header block in the first rows that defines the span/length constants:
 
-| restraints | prot x coor | prot y coor | prot z coor | sl | wi | wj | dij |
-|------------|--------------|--------------|--------------|----|-----|-----|------|
+- `Ls` stored in **cell B2**
+- `Lx` stored in **cell B3**
+- `Ly` stored in **cell B4**
+- `Lz` stored in **cell B5**
+
+Example (as it appears in the sheet):
+- Column A contains labels like `Ls=`, `Lx=`, `Ly=`, `Lz=`
+- Column B contains the numeric values.
+
+### 2) Restraints table
+A tabular section below the constants block with the following column headers:
+
+| restraints | prot x coor | prot y coor | prot z coor | sl | wi | dij |
+|-----------|--------------|--------------|--------------|----|----|-----|
+
+All numeric columns (`prot x coor`, `prot y coor`, `prot z coor`, `sl`, `wi`, `dij`) must contain valid numeric values.
 
 Where:
 - `sl`: peptide residue index
-- `wi`, `wj`: evolutionary conservation scores for the protein and peptide residues
+- `wi`: evolutionary conservation scores for the protein residues
 - `dij`: interatomic distance between atoms involved in the restraint
 
 ---
 
 ## Conservation Weights
 
-Each restraint entry must include conservation scores (`wi`, `wj`). You have two options for assigning them:
+Each restraint entry must include conservation scores (`wi`). You have two options for assigning them:
 
 ### Option 1: Use Your Own Conservation Scores  
 If you have performed multiple sequence alignments (MSA) on your own protein and peptide sequences, you can calculate conservation scores using any preferred method and enter them directly into the input Excel file.
 
 ### Option 2: Use Our Scores as a Reference  
-We provide a file:
+We provide a file for SH3 conservation weights:
 
 ```
-conservation_weights.xlsx
+conservation_weights_SH3_domain.xlsx
 ```
 
-This file includes conservation scores calculated for the **43 PDB complexes** used in our benchmark study. These scores were generated based on:
-
-- Multiple sequence alignments of homologous protein sequences
-- Class-specific alignments for **class I** and **class II** peptides
+This file includes conservation scores (Multiple sequence alignments) calculated for the **43 PDB complexes** used in our benchmark study. 
 
 ---
 
@@ -115,9 +126,9 @@ This file includes conservation scores calculated for the **43 PDB complexes** u
 
 Each output file (e.g. `your_file_output.xlsx`) contains:
 
-- Intermediate values: `w_ij`, `f(dij)`, `Omega_ij`
+- Intermediate values: `f(dij)`, `Omega_ij`
 - Spatial and sequence variance: `sigma_P`, `sigma_L`
-- Final restraint score: printed in terminal and saved to Excel
+- Final restraint score: printed in terminal
 
 ---
 
