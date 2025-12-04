@@ -4,7 +4,7 @@ This Python project provides a tool to calculate **restraint scores** for protei
 
 - Evolutionary conservation  
 - Spatial proximity of atoms  
-- Dispersion across the protein surface and peptide sequence
+- Distribution across the protein surface and peptide sequence
 
 It is designed for structure prediction workflows such as HADDOCK and enables efficient modeling with minimal, high-quality restraints.
 
