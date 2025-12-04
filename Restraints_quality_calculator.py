@@ -124,7 +124,6 @@ def compute_restraint_score(excel_path: str) -> Tuple[pd.DataFrame, float]:
     df.to_excel(out_path, index=False)
 
     print(f"File: {excel_path}")
-    print(f"Lengths: Ls={Ls}, Lx={Lx}, Ly={Ly}, Lz={Lz}")
     print(f"Restraint Score (σ): {score:.6f}")
     print(f"Wrote: {out_path}")
 
