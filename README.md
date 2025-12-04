@@ -106,7 +106,7 @@ Where:
 
 ## Conservation Weights
 
-Each restraint entry must include conservation scores (`wi`). You have two options for assigning them:
+Each restraint entry must include conservation score `wi`. You have two options for assigning them:
 
 ### Option 1: Use Your Own Conservation Scores  
 If you have performed multiple sequence alignments (MSA) on your own protein and peptide sequences, you can calculate conservation scores using any preferred method and enter them directly into the input Excel file.
