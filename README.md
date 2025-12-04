@@ -6,7 +6,7 @@ This Python project provides a tool to calculate **restraint scores** for protei
 - Spatial proximity of atoms  
 - Distribution across the protein surface and peptide sequence
 
-It is designed for structure prediction workflows such as HADDOCK and enables efficient modeling with minimal, high-quality restraints.
+It is designed for structure prediction workflows and enables efficient modeling with minimal, high-quality restraints.
 
 ---
 
