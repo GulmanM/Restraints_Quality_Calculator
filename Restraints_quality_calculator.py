@@ -1,14 +1,25 @@
-#!/usr/bin/env python
-# coding: utf-8
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 """
 Restraint Score Calculator for Protein–Peptide Docking
 
-This script calculates a composite restraint score based on:
-- Evolutionary weights (wi, wj)
-- Distance between atoms (dij)
-- Spatial dispersion of protein atoms
-- Sequence dispersion of peptide contacts
+Computes a composite restraint score using:
+  - Distance weighting f(dij) = exp(-(dij - d0))
+  - Protein spatial distribution (normalized by Lx, Ly, Lz)
+  - Peptide sequence distribution (normalized by Ls)
+  - Evolutionary weights wi
+
+Input Excel layout:
+  - B2..B5 contain:
+      B2 = Ls, B3 = Lx, B4 = Ly, B5 = Lz
+  - Restraint table header is on Excel row 7 
+
+Required table columns:
+  'prot x coor', 'prot y coor', 'prot z coor', 'sl', 'wi', 'dij'
+
+Outputs:
+  - <input>_output.xlsx with intermediate columns (fdij, omega_ij, sigma_P, sigma_L)
 
 Author: Miriam Gulman
 Date: 12.3.2025
@@ -18,43 +29,14 @@ import pandas as pd
 import numpy as np
 import argparse
 import os
-
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-"""
-Restraint Score Calculator for Protein–Peptide Docking
-
-Computes a composite restraint score using:
-  - Distance weighting f(dij) = exp(-(dij - d0))
-  - Protein spatial dispersion (normalized by Lx, Ly, Lz)
-  - Peptide sequence dispersion (normalized by Ls)
-  - Evolutionary weights wi
-
-Input Excel layout:
-  - B2..B5 contain:
-      B2 = Ls, B3 = Lx, B4 = Ly, B5 = Lz
-  - Restraint table header is on Excel row 7 (skiprows=6)
-
-Required table columns:
-  'prot x coor', 'prot y coor', 'prot z coor', 'sl', 'wi', 'dij'
-
-Outputs:
-  - <input>_output.xlsx with intermediate columns (fdij, omega_ij, sigma_P, sigma_L)
-"""
-
-import argparse
-import os
 from typing import Tuple
-import numpy as np
-import pandas as pd
 
 # -----------------------
 # Configuration constants
 # -----------------------
 D0 = 1.8
 LENGTH_CELLS = {
-    "Ls": (1, 1),  # B2 -> (row=1, col=1) in 0-based indexing
+    "Ls": (1, 1),  # B2 
     "Lx": (2, 1),  # B3
     "Ly": (3, 1),  # B4
     "Lz": (4, 1),  # B5
@@ -123,14 +105,14 @@ def compute_restraint_score(excel_path: str) -> Tuple[pd.DataFrame, float]:
     mu_y = df["prot y coor"].mean()
     mu_z = df["prot z coor"].mean()
 
-    # Protein dispersion term (per restraint)
+    # Protein distribution term (per restraint)
     df["sigma_P"] = (
         ((df["prot x coor"] - mu_x) / Lx) ** 2 +
         ((df["prot y coor"] - mu_y) / Ly) ** 2 +
         ((df["prot z coor"] - mu_z) / Lz) ** 2
     ) / n
 
-    # Peptide dispersion term (per restraint)
+    # Peptide distribution term (per restraint)
     mu_s = df["sl"].mean()
     df["sigma_L"] = ((df["sl"] - mu_s) / Ls) ** 2 / n
 
