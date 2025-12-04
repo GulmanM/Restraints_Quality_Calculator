@@ -19,9 +19,9 @@ restraint-score/
 ├── demo/
 │   ├── 1azg_high_scoring_example.xlsx           # Example input file 1
 │   ├── 1azg_low_scoring_example.xlsx            # Example input file 2
-│   ├── 1azg_high_scoring_example_output.xlsx    # Output 1 (generated)
-│   └── 1azg_low_scoring_example_output.xlsx     # Output 2 (generated)
-├── conservation_weights_SH3_domain.xlsx                    # Reference scores from 43 PDB complexes
+│   ├── 1azg_high_scoring_example_output.xlsx    # Output 1
+│   └── 1azg_low_scoring_example_output.xlsx     # Output 2
+├── conservation_weights_SH3_domain.xlsx         # Reference scores from 43 PDB complexes
 ├── README.md                                    
 ```
 
